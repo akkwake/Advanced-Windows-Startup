@@ -59,8 +59,6 @@ namespace Advanced_Windows_Launcher
         {
             InitializeComponent();
 
-            bool fileError = false;
-            
             this.Name = appData[0];
             this.pathInitial = appData[1];
             StartupApplicationData.SplitPathAndArguments(appData[1], out this.path, out this.args);

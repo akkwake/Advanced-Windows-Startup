@@ -57,6 +57,7 @@ namespace Advanced_Windows_Launcher
             }
 
             //Create items for managed apps
+            //Exception thrown here if there is no user startup file
             foreach (string[] app in managedItems)
             {
                 LauncherItem item = new LauncherItem(app);
@@ -92,9 +93,9 @@ namespace Advanced_Windows_Launcher
             string username = Environment.UserName;
             string path = s.Substring(0, s.LastIndexOf('\\')) + '\\' + username + ".startup.dat";
 
+            List<string[]> apps = new List<string[]>();
             if (File.Exists(path))
             {
-                List<string[]> apps = new List<string[]>();
                 using (StreamReader sr = new StreamReader(path))
                 {
                     string line;
@@ -115,9 +116,8 @@ namespace Advanced_Windows_Launcher
                         }
                     }
                 }
-                return apps;
             }
-            return null;
+            return apps;
         }
         
 
