@@ -28,12 +28,18 @@ namespace Advanced_Windows_Startup
 
         static string username = Environment.UserName;
 
+        //static string userFilePath = Assembly.GetExecutingAssembly().Location + '\\' + username + ".startup.dat";
         static string userFilePath = Environment.CurrentDirectory + '\\' + username + ".startup.dat";
 
         static List<string> userfileData = new List<string>();
 
         static Settings()
         {
+            if (StartsWithWindows())
+            {
+                userFilePath = GetConfigPath();
+            }
+
             IsAdministrator = CheckAdminStatus();
             LauncherEnabled = StartsWithWindows();
         }
@@ -45,9 +51,15 @@ namespace Advanced_Windows_Startup
         /// <param name="listView"></param>
         public static void SaveStartupList(ListView listView)
         {
-            string path = Environment.CurrentDirectory + '\\' + username + ".startup.dat";
+            string managerPath = Assembly.GetExecutingAssembly().Location;
+            string path = managerPath.Substring(0, managerPath.LastIndexOf('\\') + 1) + username + ".startup.dat";
+            
+            if (StartsWithWindows())
+            {
+                path = GetConfigPath();
+            }
 
-            StreamWriter sw = new StreamWriter(path);
+            StreamWriter sw = new StreamWriter(userFilePath);
 
             listView.Invoke(new Action(() =>
             {
@@ -203,11 +215,21 @@ namespace Advanced_Windows_Startup
                 return key.GetValueNames().Where(p => p.Equals(registryName)).Any();
         }
 
-        /// <summary>
-        /// Returns true if this application was ran with administrator privileges.
-        /// </summary>
-        /// <returns></returns>
-        static bool CheckAdminStatus()
+        static string GetConfigPath()
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(Explorer.GetGroupData(StartupGroup.HKCU).path, false))
+            {
+                IEnumerable<String> k = key.GetValueNames().Where(p => p.Equals(registryName));
+
+                return Path.GetDirectoryName((String)key.GetValue("Advanced Windows Startup")) + "\\" + username + ".startup.dat";
+            }
+        }
+
+            /// <summary>
+            /// Returns true if this application was ran with administrator privileges.
+            /// </summary>
+            /// <returns></returns>
+            static bool CheckAdminStatus()
         {
             return (new WindowsPrincipal(WindowsIdentity.GetCurrent()))
                     .IsInRole(WindowsBuiltInRole.Administrator);

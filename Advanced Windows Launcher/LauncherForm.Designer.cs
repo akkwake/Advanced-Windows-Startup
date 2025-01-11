@@ -110,14 +110,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonStartManager.BackColor = System.Drawing.SystemColors.Control;
             this.buttonStartManager.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonStartManager.ForeColor = System.Drawing.Color.Firebrick;
             this.buttonStartManager.Location = new System.Drawing.Point(12, 13);
             this.buttonStartManager.Name = "buttonStartManager";
             this.buttonStartManager.Size = new System.Drawing.Size(274, 20);
             this.buttonStartManager.TabIndex = 15;
-            this.buttonStartManager.Text = "Unmanaged apps found. Click to fix.";
+            this.buttonStartManager.Text = "Open Startup Manager";
             this.buttonStartManager.UseVisualStyleBackColor = false;
-            this.buttonStartManager.Visible = false;
             this.buttonStartManager.Click += new System.EventHandler(this.buttonStartManager_Click);
             // 
             // LauncherForm

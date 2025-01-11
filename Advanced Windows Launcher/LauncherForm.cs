@@ -68,12 +68,15 @@ namespace Advanced_Windows_Launcher
 
             SetStartupSizeAndPosition();
 
-            //Show `Launch Manager` button
+            //`Launch Manager` button
             if (unmanagedItems.Count > 0 )
-                buttonStartManager.Visible = true;
+            {
+                buttonStartManager.ForeColor = Color.Firebrick;
+                buttonStartManager.Text = "Unmanaged apps found. Click to fix.";
+            }
             if (fileErrorFound)
             {
-                buttonStartManager.Visible = true;
+                buttonStartManager.ForeColor = Color.Firebrick;
                 buttonStartManager.Text = "File error found. Click to fix.";
             }
 
@@ -148,14 +151,25 @@ namespace Advanced_Windows_Launcher
             labelTimeElapsed.Text = timeElapsed.ToString("F1");
 
             //Update launcher items
-            for (int i = launcherItems.Count - 1; i >= 0; i--)
+            /*for (int i = launcherItems.Count - 1; i >= 0; i--)
             {
                 if (launcherItems[i].Update(timeElapsed))
                 {
                     LauncherItem item = launcherItems[i];
                     launcherItems.RemoveAt(i);
                     item.StartProcess();
-                    i--;
+                }
+            }*/
+
+            foreach (var item in launcherItems.ToList())  // Use ToList() to avoid modifying the collection while iterating
+            {
+                if (item.Update(timeElapsed))
+                {
+                    // Step 2: Process the item
+                    item.StartProcess();
+
+                    // Step 3: Remove the item after processing
+                    launcherItems.Remove(item);
                 }
             }
 
@@ -202,7 +216,15 @@ namespace Advanced_Windows_Launcher
             process.StartInfo = info;
             process.StartInfo.UseShellExecute = true;
             process.StartInfo.Verb = "runas";   //Run as admin
-            process.Start();
+            try
+            {
+                process.Start();
+            }
+            catch (System.ComponentModel.Win32Exception exception)
+            {
+                process.StartInfo.Verb = "";
+                process.Start();
+            }
         }
 
         void SetStartupSizeAndPosition()
